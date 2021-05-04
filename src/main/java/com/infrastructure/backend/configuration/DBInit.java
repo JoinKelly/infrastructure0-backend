@@ -1,14 +1,13 @@
 package com.infrastructure.backend.configuration;
 
-import com.infrastructure.backend.entity.Role;
-import com.infrastructure.backend.entity.User;
+import com.infrastructure.backend.entity.user.Role;
+import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.repository.RoleRepository;
 import com.infrastructure.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;

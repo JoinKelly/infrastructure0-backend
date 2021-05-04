@@ -1,4 +1,4 @@
-package com.infrastructure.backend.model;
+package com.infrastructure.backend.model.user;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -10,7 +10,7 @@ public class CustomUserDetails extends User {
     private String fullName;
     private String email;
 
-    public CustomUserDetails(com.infrastructure.backend.entity.User user, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(com.infrastructure.backend.entity.user.User user, Collection<? extends GrantedAuthority> authorities) {
         super(user.getUsername(), user.getPassword(), authorities);
         this.email = user.getEmail();
         this.fullName = user.getEmail();

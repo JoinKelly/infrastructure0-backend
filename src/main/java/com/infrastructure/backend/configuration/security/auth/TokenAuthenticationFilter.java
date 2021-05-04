@@ -1,12 +1,11 @@
 package com.infrastructure.backend.configuration.security.auth;
 
-import com.infrastructure.backend.model.CustomUserDetails;
+import com.infrastructure.backend.model.user.CustomUserDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;

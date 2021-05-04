@@ -1,4 +1,4 @@
-package com.infrastructure.backend.entity;
+package com.infrastructure.backend.entity.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

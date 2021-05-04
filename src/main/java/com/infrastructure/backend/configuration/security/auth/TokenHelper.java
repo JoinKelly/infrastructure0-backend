@@ -2,8 +2,8 @@ package com.infrastructure.backend.configuration.security.auth;
 
 import com.infrastructure.backend.common.exception.CustomResponseStatusException;
 import com.infrastructure.backend.common.exception.ErrorCode;
-import com.infrastructure.backend.entity.User;
-import com.infrastructure.backend.model.CustomUserDetails;
+import com.infrastructure.backend.entity.user.User;
+import com.infrastructure.backend.model.user.CustomUserDetails;
 import com.infrastructure.backend.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

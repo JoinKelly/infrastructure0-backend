@@ -1,5 +1,6 @@
 package com.infrastructure.backend.controller;
 
+import com.infrastructure.backend.configuration.security.auth.TokenHelper;
 import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.repository.UserRepository;
 import io.swagger.annotations.ApiOperation;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/admin")
+@RequestMapping(path = "/api/v1")
 public class UserController {
 
     @Autowired
@@ -28,6 +29,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenHelper tokenHelper;
 
     @PostMapping(path = "/add")
     @ResponseBody
@@ -43,10 +47,19 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 400, message = "Bad request")})
-    @RequestMapping(value = "/refresh_token", method = RequestMethod.GET)
     @GetMapping(path = "/find_all")
     @ResponseBody
     public ResponseEntity<List<User>> findAll(@RequestHeader("Authorization") String authorization) {
         return ResponseEntity.ok(this.userRepository.findAll());
+    }
+
+    @ApiOperation(value = "Get the current user information", notes = "Return the current user information")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @GetMapping(path = "/user_info")
+    @ResponseBody
+    public ResponseEntity<User> getUserInfo(@RequestHeader("Authorization") String authorization) {
+        return ResponseEntity.ok(this.tokenHelper.getUserFromToken(this.tokenHelper.getToken(authorization)));
     }
 }

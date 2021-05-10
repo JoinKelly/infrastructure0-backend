@@ -10,6 +10,10 @@ public enum ErrorCode {
 
     USERNAME_NOT_EXIST,
 
+    USERNAME_EXIST,
+
+    EMAIL_EXIST,
+
     PASSWORD_EMPTY,
 
     PASSWORD_WRONG,

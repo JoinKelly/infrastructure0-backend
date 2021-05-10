@@ -73,7 +73,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/login", "/api/v1/register").permitAll()
-                .antMatchers("/api/v1/*", "/admin/**").authenticated().and()
+                .antMatchers("/**").authenticated()
+                .antMatchers("/admin/**").hasAuthority("ADMINISTRATOR")
+                .and()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenHelper, userDetailsService), BasicAuthenticationFilter.class)
                 .cors();
         // disabling csrf here, you should enable it before using in production

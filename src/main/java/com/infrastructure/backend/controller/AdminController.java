@@ -1,8 +1,8 @@
 package com.infrastructure.backend.controller;
 
-import com.github.fge.jsonpatch.JsonPatch;
 import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.model.common.request.UserAddition;
+import com.infrastructure.backend.model.common.request.UserUpdateRequest;
 import com.infrastructure.backend.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -46,7 +46,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<User> updateUser(@RequestHeader("Authorization") String authorization,
                                            @PathVariable(value = "userId") Integer userId,
-                                           @RequestBody @Valid JsonPatch user) {
+                                           @RequestBody @Valid UserUpdateRequest user) {
         return ResponseEntity.ok(this.userService.update(userId, user));
     }
 

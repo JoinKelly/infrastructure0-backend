@@ -58,6 +58,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>2.7.0</version>
@@ -108,12 +113,6 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>2.0.1.Final</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.java-json-tools</groupId>
-            <artifactId>json-patch</artifactId>
-            <version>1.12</version>
         </dependency>
 
     </dependencies>

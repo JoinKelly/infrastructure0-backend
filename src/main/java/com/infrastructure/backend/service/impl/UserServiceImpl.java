@@ -1,14 +1,12 @@
 package com.infrastructure.backend.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
 import com.infrastructure.backend.common.exception.CustomResponseStatusException;
 import com.infrastructure.backend.common.exception.ErrorCode;
 import com.infrastructure.backend.configuration.security.auth.TokenHelper;
 import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.model.common.request.UserAddition;
+import com.infrastructure.backend.model.common.request.UserUpdateRequest;
 import com.infrastructure.backend.model.common.response.CommonResponse;
 import com.infrastructure.backend.model.user.CustomUserDetails;
 import com.infrastructure.backend.model.user.request.ChangePassword;
@@ -16,7 +14,6 @@ import com.infrastructure.backend.model.user.request.UserLogin;
 import com.infrastructure.backend.model.user.response.UserTokenState;
 import com.infrastructure.backend.repository.UserRepository;
 import com.infrastructure.backend.service.UserService;
-import com.infrastructure.backend.utils.ObjectMapperUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,15 +140,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(int userId, JsonPatch user) {
+    public User update(int userId, UserUpdateRequest user) {
 
         User dbUser = this.userRepository.findById(userId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_EXIST.name(), "User is not exist"));
-        try {
-            User userPatched = ObjectMapperUtils.applyPatch(this.objectMapper, user, dbUser, User.class);
-            return this.userRepository.save(userPatched);
-        } catch (JsonPatchException | JsonProcessingException e) {
-            throw new CustomResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.INTERNAL_SERVER_ERROR.name(), e.getMessage());
+        Optional<User> checkEmailUser = this.userRepository.findByEmail(user.getEmail());
+        if (checkEmailUser.isPresent() && !dbUser.getId().equals(checkEmailUser.get().getId())) {
+            throw new CustomResponseStatusException(HttpStatus.BAD_REQUEST, ErrorCode.EMAIL_EXIST.name(), "Email is exist");
         }
+        dbUser.setFullName(user.getFullName());
+        dbUser.setEmail(user.getEmail());
+        return this.userRepository.save(dbUser);
     }
 
     @Override
@@ -159,6 +157,11 @@ public class UserServiceImpl implements UserService {
         User dbUser = this.userRepository.findById(userId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_EXIST.name(), "User is not exist"));
         this.userRepository.delete(dbUser);
         return dbUser;
+    }
+
+    @Override
+    public User find(int userId) {
+        return this.userRepository.findById(userId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_EXIST.name(), "User is not exist"));
     }
 
     @Override

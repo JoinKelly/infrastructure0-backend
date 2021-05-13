@@ -156,7 +156,9 @@ public class UserServiceImpl implements UserService {
     public User delete(int userId) {
         User dbUser = this.userRepository.findById(userId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_EXIST.name(), "User is not exist"));
         this.userRepository.delete(dbUser);
-        return dbUser;
+        User deletedUser = new User();
+        deletedUser.setId(dbUser.getId());
+        return deletedUser ;
     }
 
     @Override

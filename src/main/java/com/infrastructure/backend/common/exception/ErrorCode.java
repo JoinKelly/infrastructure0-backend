@@ -22,7 +22,7 @@ public enum ErrorCode {
 
     USER_NOT_EXIST,
 
-    ART_NOT_EXIST,
+    PROJECT_NOT_EXIST,
 
     ORGANITZATION_NOT_EXIST,
 

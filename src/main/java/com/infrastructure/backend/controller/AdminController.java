@@ -1,8 +1,11 @@
 package com.infrastructure.backend.controller;
 
+import com.infrastructure.backend.entity.project.Project;
 import com.infrastructure.backend.entity.user.User;
+import com.infrastructure.backend.model.common.request.ProjectCreateRequest;
 import com.infrastructure.backend.model.common.request.UserAddition;
 import com.infrastructure.backend.model.common.request.UserUpdateRequest;
+import com.infrastructure.backend.service.ProjectService;
 import com.infrastructure.backend.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -29,6 +32,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProjectService projectService;
 
     @PostMapping(path = "/users/add")
     @ResponseBody
@@ -70,5 +76,47 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<List<User>> findAll(@RequestHeader("Authorization") String authorization) {
         return ResponseEntity.ok(this.userService.findAll());
+    }
+
+    @PostMapping(path = "/projects/add")
+    @ResponseBody
+    public ResponseEntity<Project> addNewProject(@RequestHeader("Authorization") String authorization,
+                                           @RequestBody @Valid ProjectCreateRequest projectCreateRequest) {
+        return ResponseEntity.ok(this.projectService.create(projectCreateRequest));
+    }
+
+    @ApiOperation(value = "Update project", notes = "Returns the updated project information")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Project does not exist."),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @PutMapping(path = "/projects/{projectId}/update")
+    @ResponseBody
+    public ResponseEntity<Project> updateUser(@RequestHeader("Authorization") String authorization,
+                                           @PathVariable(value = "projectId") Integer projectId,
+                                           @RequestBody @Valid ProjectCreateRequest projectUpdateRequest) {
+        return ResponseEntity.ok(this.projectService.update(projectId, projectUpdateRequest));
+    }
+
+    @ApiOperation(value = "Delete project", notes = "Returns the deleted project information")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Project does not exist."),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @DeleteMapping(path = "/projects/{projectId}/delete")
+    @ResponseBody
+    public ResponseEntity<Project> deleteProject(@RequestHeader("Authorization") String authorization,
+                                           @PathVariable(value = "projectId") Integer projectId) {
+        return ResponseEntity.ok(this.projectService.delete(projectId));
+    }
+
+    @ApiOperation(value = "Find all projects", notes = "Return the list of all projects")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @GetMapping(path = "/projects/find_all")
+    @ResponseBody
+    public ResponseEntity<List<Project>> findAllProject(@RequestHeader("Authorization") String authorization) {
+        return ResponseEntity.ok(this.projectService.findAll());
     }
 }

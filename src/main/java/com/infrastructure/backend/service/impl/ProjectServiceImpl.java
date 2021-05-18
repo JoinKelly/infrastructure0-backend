@@ -50,7 +50,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         Integer leaderId = projectUpdateRequest.getLeaderId();
         if (leaderId != null) {
-            if (leaderId.equals(project.getLeader().getId())) {
+            if (project.getLeader() == null || !leaderId.equals(project.getLeader().getId())) {
                 User dbUser = this.userRepository.findById(leaderId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_EXIST.name(), "Leader is not exist"));
                 project.setLeader(dbUser);
             }

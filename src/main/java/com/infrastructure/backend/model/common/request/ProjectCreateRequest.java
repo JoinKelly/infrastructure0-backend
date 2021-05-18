@@ -2,6 +2,7 @@ package com.infrastructure.backend.model.common.request;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class ProjectCreateRequest {
@@ -11,10 +12,10 @@ public class ProjectCreateRequest {
 
     private String description;
 
-    @NotBlank(message = "StartDate is mandatory")
+    @NotNull(message = "StartDate is mandatory")
     private Date startDate;
 
-    @NotBlank(message = "EndDate is mandatory")
+    @NotNull(message = "EndDate is mandatory")
     private Date endDate;
 
     private Integer leaderId;

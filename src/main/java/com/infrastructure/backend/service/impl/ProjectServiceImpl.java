@@ -3,8 +3,10 @@ package com.infrastructure.backend.service.impl;
 import com.infrastructure.backend.common.exception.CustomResponseStatusException;
 import com.infrastructure.backend.common.exception.ErrorCode;
 import com.infrastructure.backend.entity.project.Project;
+import com.infrastructure.backend.entity.project.ProjectMember;
 import com.infrastructure.backend.entity.user.User;
-import com.infrastructure.backend.model.common.request.ProjectCreateRequest;
+import com.infrastructure.backend.model.project.request.ProjectCreateRequest;
+import com.infrastructure.backend.repository.ProjectMemberRepository;
 import com.infrastructure.backend.repository.ProjectRepository;
 import com.infrastructure.backend.repository.UserRepository;
 import com.infrastructure.backend.service.ProjectService;
@@ -23,6 +25,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProjectMemberRepository projectMemberRepository;
     @Override
     public Project create(ProjectCreateRequest projectCreateRequest) {
 
@@ -78,5 +83,31 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Project> findAll() {
         return this.projectRepository.findAll();
+    }
+
+    @Override
+    public ProjectMember addProjectMember(Integer projectId, Integer userId) {
+        Project project = this.projectRepository.findById(projectId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.PROJECT_NOT_EXIST.name(), "Project is not exist"));
+        User dbUser = this.userRepository.findById(userId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_EXIST.name(), "User is not exist"));
+
+        Optional<ProjectMember> checkProjectMember = this.projectMemberRepository.findByProject_IdAndUser_Id(projectId, userId);
+        if (!checkProjectMember.isPresent()) {
+            ProjectMember projectMember = new ProjectMember();
+            projectMember.setProject(project);
+            projectMember.setUser(dbUser);
+            return this.projectMemberRepository.save(projectMember);
+        }
+
+        return checkProjectMember.get();
+    }
+
+    @Override
+    public void deleteProjectMember(Integer projectId, Integer userId) {
+        this.projectMemberRepository.deleteByProject_IdAndUser_Id(projectId, userId);
+    }
+
+    @Override
+    public List<ProjectMember> findAllProjectMembersByProject(Integer projectId) {
+        return this.projectMemberRepository.findAllByProject_Id(projectId);
     }
 }

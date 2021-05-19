@@ -1,6 +1,5 @@
-package com.infrastructure.backend.model.common.request;
+package com.infrastructure.backend.model.project.request;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;

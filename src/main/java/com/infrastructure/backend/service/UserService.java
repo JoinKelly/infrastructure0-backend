@@ -1,8 +1,8 @@
 package com.infrastructure.backend.service;
 
 import com.infrastructure.backend.entity.user.User;
-import com.infrastructure.backend.model.common.request.UserAddition;
-import com.infrastructure.backend.model.common.request.UserUpdateRequest;
+import com.infrastructure.backend.model.user.request.UserAddition;
+import com.infrastructure.backend.model.user.request.UserUpdateRequest;
 import com.infrastructure.backend.model.common.response.CommonResponse;
 import com.infrastructure.backend.model.user.request.ChangePassword;
 import com.infrastructure.backend.model.user.request.UserLogin;

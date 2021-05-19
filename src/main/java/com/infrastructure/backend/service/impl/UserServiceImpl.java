@@ -5,8 +5,8 @@ import com.infrastructure.backend.common.exception.CustomResponseStatusException
 import com.infrastructure.backend.common.exception.ErrorCode;
 import com.infrastructure.backend.configuration.security.auth.TokenHelper;
 import com.infrastructure.backend.entity.user.User;
-import com.infrastructure.backend.model.common.request.UserAddition;
-import com.infrastructure.backend.model.common.request.UserUpdateRequest;
+import com.infrastructure.backend.model.user.request.UserAddition;
+import com.infrastructure.backend.model.user.request.UserUpdateRequest;
 import com.infrastructure.backend.model.common.response.CommonResponse;
 import com.infrastructure.backend.model.user.CustomUserDetails;
 import com.infrastructure.backend.model.user.request.ChangePassword;

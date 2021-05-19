@@ -2,9 +2,9 @@ package com.infrastructure.backend.controller;
 
 import com.infrastructure.backend.entity.project.Project;
 import com.infrastructure.backend.entity.user.User;
-import com.infrastructure.backend.model.common.request.ProjectCreateRequest;
-import com.infrastructure.backend.model.common.request.UserAddition;
-import com.infrastructure.backend.model.common.request.UserUpdateRequest;
+import com.infrastructure.backend.model.project.request.ProjectCreateRequest;
+import com.infrastructure.backend.model.user.request.UserAddition;
+import com.infrastructure.backend.model.user.request.UserUpdateRequest;
 import com.infrastructure.backend.service.ProjectService;
 import com.infrastructure.backend.service.UserService;
 import io.swagger.annotations.ApiOperation;

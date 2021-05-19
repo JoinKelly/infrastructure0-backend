@@ -1,4 +1,4 @@
-package com.infrastructure.backend.model.common.request;
+package com.infrastructure.backend.model.user.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

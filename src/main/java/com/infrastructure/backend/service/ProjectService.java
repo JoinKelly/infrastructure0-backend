@@ -23,4 +23,6 @@ public interface ProjectService {
     void deleteProjectMember(Integer projectId, Integer userId);
 
     List<ProjectMember> findAllProjectMembersByProject(Integer projectId);
+
+    ProjectMember addProjectMemberByEmail(int projectId, String email);
 }

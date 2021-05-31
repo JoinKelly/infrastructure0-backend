@@ -47,6 +47,20 @@ public class ProjectController {
         return ResponseEntity.ok(this.projectService.addProjectMember(projectId, userId));
     }
 
+    @ApiOperation(value = "Add member to the project", notes = "Return the project member information")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @GetMapping(path = "/project/{projectId}/add_member_by_email")
+    @ResponseBody
+    @PreAuthorize("hasPermission(#projectId, 'ADD_MEMBER')")
+    public ResponseEntity<ProjectMember> addProjectMemberByEmail(@RequestHeader("Authorization") String authorization,
+                                                          @PathVariable(value = "projectId") int projectId,
+                                                          @RequestParam(value = "email") String email
+    ) {
+        return ResponseEntity.ok(this.projectService.addProjectMemberByEmail(projectId, email));
+    }
+
     @ApiOperation(value = "Add many members to the project", notes = "Return the project members information")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
@@ -84,7 +98,7 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 400, message = "Bad request")})
-    @GetMapping(path = "/project/{projectId}/all_member}")
+    @GetMapping(path = "/project/{projectId}/all_member")
     @ResponseBody
     public ResponseEntity<List<ProjectMember>> findAllProjectMembers(@RequestHeader("Authorization") String authorization,
                                                                     @PathVariable(value = "projectId") int projectId

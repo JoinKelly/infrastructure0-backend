@@ -28,6 +28,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private ProjectMemberRepository projectMemberRepository;
+
     @Override
     public Project create(ProjectCreateRequest projectCreateRequest) {
 
@@ -72,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectRepository.delete(project);
         Project deletedProject = new Project();
         deletedProject.setId(project.getId());
-        return deletedProject ;
+        return deletedProject;
     }
 
     @Override
@@ -109,5 +110,21 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectMember> findAllProjectMembersByProject(Integer projectId) {
         return this.projectMemberRepository.findAllByProject_Id(projectId);
+    }
+
+    @Override
+    public ProjectMember addProjectMemberByEmail(int projectId, String email) {
+        Project project = this.projectRepository.findById(projectId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.PROJECT_NOT_EXIST.name(), "Project is not exist"));
+        User dbUser = this.userRepository.findByEmail(email).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_EXIST.name(), "User is not exist"));
+
+        Optional<ProjectMember> checkProjectMember = this.projectMemberRepository.findByProject_IdAndUser_Id(projectId, dbUser.getId());
+        if (!checkProjectMember.isPresent()) {
+            ProjectMember projectMember = new ProjectMember();
+            projectMember.setProject(project);
+            projectMember.setUser(dbUser);
+            return this.projectMemberRepository.save(projectMember);
+        }
+
+        return checkProjectMember.get();
     }
 }

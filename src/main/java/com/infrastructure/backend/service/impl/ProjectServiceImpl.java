@@ -129,4 +129,9 @@ public class ProjectServiceImpl implements ProjectService {
 
         return checkProjectMember.get();
     }
+
+    @Override
+    public List<Project> findAllMyProjects(User user) {
+        return this.projectRepository.findAllByLeader_Id(user.getId());
+    }
 }

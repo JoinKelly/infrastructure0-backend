@@ -38,7 +38,11 @@ public class ProjectPermissionEvaluator implements PermissionEvaluator {
             User user = this.userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_EXIST.name(), "User is not exist"));
             if (user.getRoles() != null) {
                 for (Role role: user.getRoles()) {
-                    if (role.getName().equals("ADMINISTRATOR")) {
+                    if (role.getName().equals("ADMINISTRATOR")
+                            && (o1.equals("ADD_MEMBER")
+                                || o1.equals("ADD_MEMBER")
+                                || o1.equals("REMOVE_MEMBER")
+                                || o1.equals("FIND_ALL_MEMBER"))) {
                         return true;
                     }
                 }

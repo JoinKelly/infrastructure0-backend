@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,9 +47,11 @@ public class TaskController {
         return ResponseEntity.ok(this.taskService.find(taskId));
     }
 
-    @PostMapping(path = "/add")
+    @PostMapping(path = "/{projectId}/add")
     @ResponseBody
+    @PreAuthorize("hasPermission(#projectId, 'ADD_TASK')")
     public ResponseEntity<Task> addNewTask(@RequestHeader("Authorization") String authorization,
+                                           @PathVariable(value = "projectId") Integer projectId,
                                            @RequestBody @Valid TaskCreateRequest taskCreateRequest) {
         return ResponseEntity.ok(this.taskService.create(taskCreateRequest));
     }
@@ -58,9 +61,11 @@ public class TaskController {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 404, message = "Project does not exist."),
             @ApiResponse(code = 400, message = "Bad request")})
-    @PutMapping(path = "/{taskId}/update")
+    @PutMapping(path = "/{projectId}/{taskId}/update")
     @ResponseBody
+    @PreAuthorize("hasPermission(#projectId, 'UPDATE_TASK')")
     public ResponseEntity<Task> updateUser(@RequestHeader("Authorization") String authorization,
+                                           @PathVariable(value = "projectId") Integer projectId,
                                            @PathVariable(value = "taskId") Integer taskId,
                                            @RequestBody @Valid TaskCreateRequest taskCreateRequest) {
         return ResponseEntity.ok(this.taskService.update(taskId, taskCreateRequest));
@@ -71,9 +76,11 @@ public class TaskController {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 404, message = "Task does not exist."),
             @ApiResponse(code = 400, message = "Bad request")})
-    @DeleteMapping(path = "/{taskId}/delete")
+    @DeleteMapping(path = "/{projectId}/{taskId}/delete")
     @ResponseBody
-    public ResponseEntity<CommonResponse> deleteProject(@RequestHeader("Authorization") String authorization,
+    @PreAuthorize("hasPermission(#projectId, 'DELETE_TASK')")
+    public ResponseEntity<CommonResponse> deleteTask(@RequestHeader("Authorization") String authorization,
+                                                        @PathVariable(value = "projectId") Integer projectId,
                                                         @PathVariable(value = "taskId") Integer taskId) {
 
         this.taskService.delete(taskId);
@@ -97,6 +104,7 @@ public class TaskController {
             @ApiResponse(code = 400, message = "Bad request")})
     @GetMapping(path = "/find_all_by_project/{projectId}")
     @ResponseBody
+    @PreAuthorize("hasPermission(#projectId, 'FIND_ALL_TASK')")
     public ResponseEntity<List<Task>> findAllByProject(@RequestHeader("Authorization") String authorization,
                                                        @PathVariable(value = "projectId") Integer projectId) {
         return ResponseEntity.ok(this.taskService.findAllByProject(projectId));

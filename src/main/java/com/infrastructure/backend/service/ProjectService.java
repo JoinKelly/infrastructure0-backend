@@ -2,6 +2,7 @@ package com.infrastructure.backend.service;
 
 import com.infrastructure.backend.entity.project.Project;
 import com.infrastructure.backend.entity.project.ProjectMember;
+import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.model.project.request.ProjectCreateRequest;
 
 import java.util.List;
@@ -25,4 +26,6 @@ public interface ProjectService {
     List<ProjectMember> findAllProjectMembersByProject(Integer projectId);
 
     ProjectMember addProjectMemberByEmail(int projectId, String email);
+
+    List<Project> findAllMyProjects(User user);
 }

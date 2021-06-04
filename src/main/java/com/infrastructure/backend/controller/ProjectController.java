@@ -1,5 +1,6 @@
 package com.infrastructure.backend.controller;
 
+import com.infrastructure.backend.configuration.security.auth.TokenHelper;
 import com.infrastructure.backend.entity.project.Project;
 import com.infrastructure.backend.entity.project.ProjectMember;
 import com.infrastructure.backend.model.common.response.CommonResponse;
@@ -21,6 +22,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private TokenHelper tokenHelper;
 
     @ApiOperation(value = "Get the project information", notes = "Return the project information")
     @ApiResponses(value = {
@@ -100,9 +104,20 @@ public class ProjectController {
             @ApiResponse(code = 400, message = "Bad request")})
     @GetMapping(path = "/project/{projectId}/all_member")
     @ResponseBody
+    @PreAuthorize("hasPermission(#projectId, 'FIND_ALL_MEMBER')")
     public ResponseEntity<List<ProjectMember>> findAllProjectMembers(@RequestHeader("Authorization") String authorization,
                                                                     @PathVariable(value = "projectId") int projectId
     ) {
         return ResponseEntity.ok(this.projectService.findAllProjectMembersByProject(projectId));
+    }
+
+    @ApiOperation(value = "Find all my projects", notes = "Return the list of all my projects")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @GetMapping(path = "/my_projects")
+    @ResponseBody
+    public ResponseEntity<List<Project>> findAllMyProjects(@RequestHeader("Authorization") String authorization) {
+        return ResponseEntity.ok(this.projectService.findAllMyProjects(this.tokenHelper.getUserFromToken(this.tokenHelper.getToken(authorization))));
     }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infrastructure.backend.common.exception.CustomResponseStatusException;
 import com.infrastructure.backend.common.exception.ErrorCode;
 import com.infrastructure.backend.configuration.security.auth.TokenHelper;
+import com.infrastructure.backend.entity.project.Project;
+import com.infrastructure.backend.entity.project.ProjectMember;
 import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.model.user.request.UserAddition;
 import com.infrastructure.backend.model.user.request.UserUpdateRequest;
@@ -13,6 +15,7 @@ import com.infrastructure.backend.model.user.request.ChangePassword;
 import com.infrastructure.backend.model.user.request.UserLogin;
 import com.infrastructure.backend.model.user.response.UserTokenState;
 import com.infrastructure.backend.repository.UserRepository;
+import com.infrastructure.backend.service.ProjectService;
 import com.infrastructure.backend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +49,9 @@ public class UserServiceImpl implements UserService {
     @Lazy
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private ProjectService projectService;
 
     @Autowired
     private TokenHelper tokenHelper;
@@ -155,6 +161,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User delete(int userId) {
         User dbUser = this.userRepository.findById(userId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_EXIST.name(), "User is not exist"));
+
+        this.projectService.unManageLeader(dbUser);
         this.userRepository.delete(dbUser);
         User deletedUser = new User();
         deletedUser.setId(dbUser.getId());

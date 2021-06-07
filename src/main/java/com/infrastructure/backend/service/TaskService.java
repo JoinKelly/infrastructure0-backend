@@ -18,4 +18,6 @@ public interface TaskService {
     List<Task> findAllByProject(int projectId);
 
     List<Task> findAllByUser(int userId);
+
+    void unAssignTasks(Integer projectsId, Integer userId);
 }

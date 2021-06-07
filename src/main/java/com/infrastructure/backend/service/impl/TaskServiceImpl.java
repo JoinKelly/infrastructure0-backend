@@ -27,6 +27,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Override
     public Task create(TaskCreateRequest taskCreateRequest) {
 
@@ -90,5 +91,16 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> findAllByUser(int userId) {
         return this.taskRepository.findAllByUser_Id(userId);
+    }
+
+    @Override
+    public void unAssignTasks(Integer projectsId, Integer userId) {
+        List<Task> tasks = this.taskRepository.findAllByProject_IdAndUser_Id(projectsId, userId);
+        if (tasks != null && tasks.size() > 0) {
+            for (Task task : tasks) {
+                task.setUser(null);
+            }
+            this.taskRepository.saveAll(tasks);
+        }
     }
 }

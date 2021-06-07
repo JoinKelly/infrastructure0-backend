@@ -10,6 +10,7 @@ import com.infrastructure.backend.repository.ProjectMemberRepository;
 import com.infrastructure.backend.repository.ProjectRepository;
 import com.infrastructure.backend.repository.UserRepository;
 import com.infrastructure.backend.service.ProjectService;
+import com.infrastructure.backend.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private ProjectMemberRepository projectMemberRepository;
+
+    @Autowired
+    private TaskService taskService;
 
     @Override
     public Project create(ProjectCreateRequest projectCreateRequest) {
@@ -106,6 +110,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public void deleteProjectMember(Integer projectId, Integer userId) {
+        ProjectMember projectMember = this.projectMemberRepository.findByProject_IdAndUser_Id(projectId, userId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.MEMBER_NOT_EXIST.name(), "Member is not exist"));
+        this.taskService.unAssignTasks(projectMember.getProject().getId(), projectMember.getUser().getId());
         this.projectMemberRepository.deleteByProject_IdAndUser_Id(projectId, userId);
     }
 
@@ -133,5 +139,25 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Project> findAllMyProjects(User user) {
         return this.projectRepository.findAllByLeader_Id(user.getId());
+    }
+
+    @Override
+    public void unManageLeader(User dbUser) {
+        List<Project> myProjects = this.findAllMyProjects(dbUser);
+        if (myProjects != null && myProjects.size() > 0) {
+            for (Project project: myProjects) {
+                project.setLeader(null);
+            }
+            this.projectRepository.saveAll(myProjects);
+        }
+
+        List<ProjectMember> projectMembers = this.projectMemberRepository.findAllByUser_Id(dbUser.getId());
+        if (projectMembers != null && projectMembers.size() > 0) {
+            for (ProjectMember projectMember: projectMembers) {
+                this.deleteProjectMember(projectMember.getProject().getId(), dbUser.getId());
+            }
+        }
+
+
     }
 }

@@ -28,4 +28,6 @@ public interface ProjectService {
     ProjectMember addProjectMemberByEmail(int projectId, String email);
 
     List<Project> findAllMyProjects(User user);
+
+    void unManageLeader(User dbUser);
 }

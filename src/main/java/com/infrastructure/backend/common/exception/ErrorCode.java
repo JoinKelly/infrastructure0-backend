@@ -22,6 +22,8 @@ public enum ErrorCode {
 
     USER_NOT_EXIST,
 
+    MEMBER_NOT_EXIST,
+
     PROJECT_NOT_EXIST,
 
     TASK_NOT_EXIST

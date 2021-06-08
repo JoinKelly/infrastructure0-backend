@@ -4,6 +4,7 @@ import com.infrastructure.backend.common.exception.CustomResponseStatusException
 import com.infrastructure.backend.common.exception.ErrorCode;
 import com.infrastructure.backend.entity.project.Project;
 import com.infrastructure.backend.entity.task.Task;
+import com.infrastructure.backend.entity.task.TaskState;
 import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.model.task.request.TaskCreateRequest;
 import com.infrastructure.backend.repository.ProjectRepository;
@@ -102,5 +103,12 @@ public class TaskServiceImpl implements TaskService {
             }
             this.taskRepository.saveAll(tasks);
         }
+    }
+
+    @Override
+    public Task changeState(int taskId, TaskState taskState) {
+        Task task = this.taskRepository.findById(taskId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.TASK_NOT_EXIST.name(), "Task is not exist"));
+        task.setState(taskState);
+        return this.taskRepository.save(task);
     }
 }

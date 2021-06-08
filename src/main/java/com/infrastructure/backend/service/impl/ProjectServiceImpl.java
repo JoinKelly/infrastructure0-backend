@@ -8,6 +8,7 @@ import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.model.project.request.ProjectCreateRequest;
 import com.infrastructure.backend.repository.ProjectMemberRepository;
 import com.infrastructure.backend.repository.ProjectRepository;
+import com.infrastructure.backend.repository.TaskRepository;
 import com.infrastructure.backend.repository.UserRepository;
 import com.infrastructure.backend.service.ProjectService;
 import com.infrastructure.backend.service.TaskService;
@@ -33,6 +34,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Override
     public Project create(ProjectCreateRequest projectCreateRequest) {
@@ -72,9 +76,12 @@ public class ProjectServiceImpl implements ProjectService {
         return this.projectRepository.save(project);
     }
 
+    @Transactional
     @Override
     public Project delete(int projectId) {
         Project project = this.projectRepository.findById(projectId).orElseThrow(() -> new CustomResponseStatusException(HttpStatus.NOT_FOUND, ErrorCode.PROJECT_NOT_EXIST.name(), "Project is not exist"));
+        this.projectMemberRepository.deleteByProject_Id(projectId);
+        this.taskRepository.deleteByProject_Id(projectId);
         this.projectRepository.delete(project);
         Project deletedProject = new Project();
         deletedProject.setId(project.getId());
@@ -141,6 +148,7 @@ public class ProjectServiceImpl implements ProjectService {
         return this.projectRepository.findAllByLeader_Id(user.getId());
     }
 
+    @Transactional
     @Override
     public void unManageLeader(User dbUser) {
         List<Project> myProjects = this.findAllMyProjects(dbUser);

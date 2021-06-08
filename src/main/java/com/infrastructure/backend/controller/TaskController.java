@@ -2,6 +2,7 @@ package com.infrastructure.backend.controller;
 
 import com.infrastructure.backend.configuration.security.auth.TokenHelper;
 import com.infrastructure.backend.entity.task.Task;
+import com.infrastructure.backend.entity.task.TaskState;
 import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.model.common.response.CommonResponse;
 import com.infrastructure.backend.model.task.request.TaskCreateRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -120,5 +122,19 @@ public class TaskController {
 
         User user = this.tokenHelper.getUserFromToken(this.tokenHelper.getToken(authorization));
         return ResponseEntity.ok(this.taskService.findAllByUser(user.getId()));
+    }
+
+    @ApiOperation(value = "Update task state")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Task does not exist."),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @PutMapping(path = "/{taskId}/update_state")
+    @ResponseBody
+    public ResponseEntity<Task> changeState(@RequestHeader("Authorization") String authorization,
+                                           @PathVariable(value = "taskId") Integer taskId,
+                                           @RequestParam(value = "state") String state) {
+
+        return ResponseEntity.ok(this.taskService.changeState(taskId, TaskState.valueOf(state)));
     }
 }

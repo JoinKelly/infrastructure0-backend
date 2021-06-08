@@ -18,7 +18,6 @@ public class ProjectMember {
 
     @ManyToOne
     @JoinColumn(name = "project_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Project project;
 
     @ManyToOne

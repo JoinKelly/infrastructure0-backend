@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,7 +38,6 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "project_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Project project;
 
     @ManyToOne

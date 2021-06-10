@@ -4,6 +4,7 @@ import com.infrastructure.backend.common.exception.CustomResponseStatusException
 import com.infrastructure.backend.common.exception.ErrorCode;
 import com.infrastructure.backend.entity.project.Project;
 import com.infrastructure.backend.entity.task.Task;
+import com.infrastructure.backend.entity.task.TaskFetchMode;
 import com.infrastructure.backend.entity.task.TaskState;
 import com.infrastructure.backend.entity.user.User;
 import com.infrastructure.backend.model.task.request.TaskCreateRequest;
@@ -14,7 +15,9 @@ import com.infrastructure.backend.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -85,13 +88,55 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> findAllByProject(int projectId) {
-        return this.taskRepository.findAllByProject_Id(projectId);
+    public List<Task> findAllByProject(int projectId, String fetchMode) {
+
+        if (!StringUtils.hasText(fetchMode)) {
+            return this.taskRepository.findAllByProject_Id(projectId);
+        }
+
+        TaskFetchMode taskFetchMode = TaskFetchMode.valueOf(fetchMode);
+        switch (taskFetchMode) {
+            case ALL:
+                return this.taskRepository.findAllByProject_Id(projectId);
+            case UN_ASSIGNED:
+                return this.taskRepository.findAllByProject_IdAndUser_Id(projectId, null);
+            case OPEN:
+                return this.taskRepository.findAllByProject_IdAndState(projectId, TaskState.OPEN.name());
+            case COMPLETE:
+                return this.taskRepository.findAllByProject_IdAndState(projectId, TaskState.COMPLETE.name());
+            case PROGRESS:
+                return this.taskRepository.findAllByProject_IdAndState(projectId, TaskState.PROGRESS.name());
+            case PENDING:
+                return this.taskRepository.findAllByProject_IdAndState(projectId, TaskState.PENDING.name());
+        }
+
+        return null;
     }
 
     @Override
-    public List<Task> findAllByUser(int userId) {
-        return this.taskRepository.findAllByUser_Id(userId);
+    public List<Task> findAllByUser(int userId, String fetchMode) {
+        if (!StringUtils.hasText(fetchMode)) {
+            return this.taskRepository.findAllByUser_Id(userId);
+        }
+
+        TaskFetchMode taskFetchMode = TaskFetchMode.valueOf(fetchMode);
+        switch (taskFetchMode) {
+            case ALL:
+                return this.taskRepository.findAllByUser_Id(userId);
+            case UN_ASSIGNED:
+                return this.taskRepository.findAllByUser_Id(userId);
+            case OPEN:
+                return this.taskRepository.findAllByUser_IdAndState(userId, TaskState.OPEN.name());
+            case COMPLETE:
+                return this.taskRepository.findAllByUser_IdAndState(userId, TaskState.COMPLETE.name());
+            case PROGRESS:
+                return this.taskRepository.findAllByUser_IdAndState(userId, TaskState.PROGRESS.name());
+            case PENDING:
+                return this.taskRepository.findAllByUser_IdAndState(userId, TaskState.PENDING.name());
+        }
+
+        return new ArrayList<>();
+
     }
 
     @Override

@@ -96,8 +96,9 @@ public class TaskController {
     @GetMapping(path = "/find_all_by_user/{userId}")
     @ResponseBody
     public ResponseEntity<List<Task>> findAllTaskByUser(@RequestHeader("Authorization") String authorization,
-                                                        @PathVariable(value = "userId") Integer userId) {
-        return ResponseEntity.ok(this.taskService.findAllByUser(userId));
+                                                        @PathVariable(value = "userId") Integer userId,
+                                                        @RequestParam(value = "fetchMode", required = false) String fetchMode) {
+        return ResponseEntity.ok(this.taskService.findAllByUser(userId, fetchMode));
     }
 
     @ApiOperation(value = "Find all task by project", notes = "Return the list of tasks")
@@ -108,8 +109,9 @@ public class TaskController {
     @ResponseBody
     @PreAuthorize("hasPermission(#projectId, 'FIND_ALL_TASK')")
     public ResponseEntity<List<Task>> findAllByProject(@RequestHeader("Authorization") String authorization,
-                                                       @PathVariable(value = "projectId") Integer projectId) {
-        return ResponseEntity.ok(this.taskService.findAllByProject(projectId));
+                                                       @PathVariable(value = "projectId") Integer projectId,
+                                                       @RequestParam(value = "fetchMode", required = false) String fetchMode) {
+        return ResponseEntity.ok(this.taskService.findAllByProject(projectId, fetchMode));
     }
 
     @ApiOperation(value = "Find all my tasks", notes = "Return the list of tasks")
@@ -118,10 +120,11 @@ public class TaskController {
             @ApiResponse(code = 400, message = "Bad request")})
     @GetMapping(path = "/my_tasks")
     @ResponseBody
-    public ResponseEntity<List<Task>> findAllMyTasks(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<List<Task>> findAllMyTasks(@RequestHeader("Authorization") String authorization,
+                                                     @RequestParam(value = "fetchMode", required = false) String fetchMode) {
 
         User user = this.tokenHelper.getUserFromToken(this.tokenHelper.getToken(authorization));
-        return ResponseEntity.ok(this.taskService.findAllByUser(user.getId()));
+        return ResponseEntity.ok(this.taskService.findAllByUser(user.getId(), fetchMode));
     }
 
     @ApiOperation(value = "Update task state")

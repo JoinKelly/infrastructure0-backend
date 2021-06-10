@@ -16,9 +16,9 @@ public interface TaskService {
 
     Task find(int taskId);
 
-    List<Task> findAllByProject(int projectId);
+    List<Task> findAllByProject(int projectId, String fetchMode);
 
-    List<Task> findAllByUser(int userId);
+    List<Task> findAllByUser(int userId, String fetchMode);
 
     void unAssignTasks(Integer projectsId, Integer userId);
 
